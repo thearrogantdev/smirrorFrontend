@@ -1,0 +1,54 @@
+include "view.fbs";
+include "dashboard.fbs";
+
+namespace backFront;
+
+enum SimpleCommandType : byte {
+  STANDBY, WAKEUP, QUIT, NEXT_THEME,
+  UP, DOWN, LEFT, RIGHT,
+  PUSH, PULL, CLOCKWISE_ROTATION,
+  ANTICLOCKWISE_ROTATION, WAVE
+}
+
+enum InfoType : byte { CAN_UPDATE, MUST_UPDATE, FACE_TRAINING }
+
+table SimpleCommand { type: SimpleCommandType; }
+
+table GetToken {
+  provider: string (required);
+  access_token: string (required);
+  token_type: string;
+  url: string;
+}
+
+table WakeUpMessage {
+    language: string;
+    user_name: string;
+}
+
+table DisplayInfo {
+    language: string;
+    type: InfoType;
+}
+
+table SystemInfo {
+    cpu: float;
+    ram: float;
+    storage: float;
+}
+
+union BackFrontPayload {
+    SimpleCommand,
+    viewStructure.View,
+    GetToken,
+    dashboardStructure.Dashboard,
+    WakeUpMessage,
+    DisplayInfo,
+    SystemInfo
+}
+
+table BackFrontMessage {
+    payload: BackFrontPayload;
+}
+
+root_type BackFrontMessage;

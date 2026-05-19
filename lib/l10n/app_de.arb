@@ -1,0 +1,10 @@
+{
+  "@@locale": "de",
+  "updateAvailable": "Update verfügbar. Bitte melden Sie sich mit einem Administratorkonto an, um das Update durchzuführen.",
+  "criticalUpdateRequired": "Kritisches Update erforderlich. Bitte melden Sie sich mit einem Administratorkonto an und führen Sie das Update durch.",
+  "inFaceTraining": "Gesichtstraining läuft",
+  "pleaseWaitAMoment": "Bitte warten Sie einen Moment",
+  "systemNotification": "Systembenachrichtigung",
+  "rainRadarNow": "Jetzt",
+  "noEvents": "Keine Ereignisse"
+}

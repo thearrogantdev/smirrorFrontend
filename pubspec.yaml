@@ -1,0 +1,45 @@
+name: smirror_frontend
+description: "Frontend for the sMirror"
+publish_to: none
+version: 0.1.0
+
+environment:
+  sdk: ^3.8.1
+
+dependencies:
+  smirror_widget_system:
+    path: ../smirror_widget_system
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  web_socket_channel: ^3.0.3
+  flutter_bloc: ^9.1.1
+  flat_buffers: ^25.9.23
+  get_it: ^9.2.0
+  injectable: ^2.7.1+4
+  http: ^1.6.0
+  google_fonts: ^8.0.1
+  intl: ^0.20.2
+  flutter_map: ^8.3.0
+  latlong2: ^0.9.1
+  package_info_plus: ^9.0.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  integration_test:
+    sdk: flutter
+
+  flutter_driver:
+    sdk: flutter
+
+  flutter_lints: ^6.0.0
+  build_runner: ^2.7.1
+  injectable_generator: ^2.8.1
+  flutterpi_tool: ^0.11.0
+
+flutter:
+  generate: true
+  uses-material-design: true

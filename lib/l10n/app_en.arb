@@ -1,0 +1,10 @@
+{
+  "@@locale": "en",
+  "updateAvailable": "Update available. Please login with an admin account if you want to update.",
+  "criticalUpdateRequired": "Critical update required. Please login with an admin account and update.",
+  "inFaceTraining": "In face training",
+  "pleaseWaitAMoment": "Please wait a moment",
+  "systemNotification": "System notification",
+  "rainRadarNow": "Now",
+  "noEvents": "No events"
+}
