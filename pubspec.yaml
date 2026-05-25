@@ -7,8 +7,10 @@ environment:
   sdk: ^3.8.1
 
 dependencies:
-  smirror_widget_system:
-    path: ../smirror_widget_system
+  smirror_wire:
+    git:
+      url: https://github.com/thearrogantdev/smirrorWire
+      ref: main
   flutter:
     sdk: flutter
   flutter_localizations:

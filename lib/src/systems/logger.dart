@@ -1,6 +1,6 @@
 import 'package:flat_buffers/flat_buffers.dart' as flat;
 import 'package:injectable/injectable.dart';
-import 'package:smirror_frontend/flatbufs/front_back_front_back_generated.dart' as fb;
+import 'package:smirror_wire/generated/front_back_front_back_generated.dart' as fb;
 import 'package:smirror_frontend/src/systems/backend_socket.dart';
 
 @Singleton()

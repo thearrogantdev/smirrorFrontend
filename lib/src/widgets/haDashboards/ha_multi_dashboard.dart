@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
-import 'package:smirror_frontend/flatbufs/view_view_structure_generated.dart' as bfmsg;
-import 'package:smirror_frontend/flatbufs/widget_internals_widget_internals_generated.dart' as internals;
+import 'package:smirror_wire/generated/view_view_structure_generated.dart' as bfmsg;
+import 'package:smirror_wire/generated/widget_internals_widget_internals_generated.dart' as internals;
 import 'package:smirror_frontend/src/bloc/dashboard_cubit.dart';
 import 'package:smirror_frontend/src/bloc/multi_dashboard_cubit.dart';
 import 'package:smirror_frontend/src/systems/backend_socket.dart';
 import 'package:smirror_frontend/src/systems/ha_data_service.dart';
 import 'package:smirror_frontend/src/systems/home_assistant_repo.dart';
-import 'package:smirror_widget_system/widget_ids.dart';
+import 'package:smirror_wire/constants/widget_ids.dart';
 import 'package:smirror_frontend/src/widgets/haDashboards/dashboard_display_grid.dart';
 import 'package:smirror_frontend/src/widgets/base_widget.dart';
 

@@ -4,7 +4,7 @@ import 'package:get_it/get_it.dart';
 import 'package:smirror_frontend/src/bloc/dashboard_cubit.dart';
 import 'package:smirror_frontend/src/systems/ha_data_service.dart';
 import 'package:smirror_frontend/src/systems/home_assistant_repo.dart';
-import 'package:smirror_widget_system/widget_ids.dart';
+import 'package:smirror_wire/constants/widget_ids.dart';
 import 'package:smirror_frontend/src/widget_system/widget_property_helper.dart';
 import 'package:smirror_frontend/src/widgets/haDashboards/dashboard_display_grid.dart' show DashboardDisplayGrid;
 import 'package:smirror_frontend/src/widgets/base_widget.dart';

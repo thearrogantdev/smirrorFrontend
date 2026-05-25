@@ -1,6 +1,6 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:smirror_frontend/flatbufs/back_front_back_front_generated.dart' as bfmsg;
+import 'package:smirror_wire/generated/back_front_back_front_generated.dart' as bfmsg;
 import 'package:smirror_frontend/l10n/app_localizations.dart';
 
 class InfoOverlay extends StatefulWidget {

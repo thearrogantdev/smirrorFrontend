@@ -1,13 +1,13 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:injectable/injectable.dart';
-import 'package:smirror_frontend/flatbufs/dashboard_dashboard_structure_generated.dart' as d;
-import 'package:smirror_frontend/flatbufs/view_view_structure_generated.dart' as v_struct;
+import 'package:smirror_wire/generated/dashboard_dashboard_structure_generated.dart' as d;
+import 'package:smirror_wire/generated/view_view_structure_generated.dart' as v_struct;
 import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
-import 'package:smirror_frontend/flatbufs/back_front_back_front_generated.dart' as b;
+import 'package:smirror_wire/generated/back_front_back_front_generated.dart' as b;
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:smirror_frontend/flatbufs/front_back_front_back_generated.dart' as fb_front;
+import 'package:smirror_wire/generated/front_back_front_back_generated.dart' as fb_front;
 
 
 @Singleton()

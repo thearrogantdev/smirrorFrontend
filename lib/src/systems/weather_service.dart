@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:injectable/injectable.dart';
-import 'package:smirror_widget_system/widget_ids.dart';
+import 'package:smirror_wire/constants/widget_ids.dart';
 import 'token_service.dart';
 
 @immutable

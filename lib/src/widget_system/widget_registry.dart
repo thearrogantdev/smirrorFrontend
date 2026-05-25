@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:smirror_frontend/flatbufs/view_view_structure_generated.dart' as bfmsg;
-import 'package:smirror_widget_system/widget_ids.dart';
+import 'package:smirror_wire/generated/view_view_structure_generated.dart' as bfmsg;
+import 'package:smirror_wire/constants/widget_ids.dart';
 import 'package:smirror_frontend/src/widgets/bus_stop_widget.dart';
 import 'package:smirror_frontend/src/widgets/calendar_widget.dart';
 import 'package:smirror_frontend/src/widgets/calendar_widget_two_days.dart';

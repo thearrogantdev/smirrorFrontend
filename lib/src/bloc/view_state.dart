@@ -1,5 +1,5 @@
-import 'package:smirror_frontend/flatbufs/back_front_back_front_generated.dart' as bfmsg;
-import 'package:smirror_frontend/flatbufs/view_view_structure_generated.dart' as vstruct;
+import 'package:smirror_wire/generated/back_front_back_front_generated.dart' as bfmsg;
+import 'package:smirror_wire/generated/view_view_structure_generated.dart' as vstruct;
 
 abstract class ViewState {}
 

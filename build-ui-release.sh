@@ -51,7 +51,7 @@ build_variant() {
 
   local SHA=$(sha256sum "$ZIP_PATH" | awk '{print $1}')
   local SIZE=$(stat -c%s "$ZIP_PATH")
-  local TAG="ui-${VERSION}"
+  local TAG="${VERSION}"
   local URL="https://github.com/${REPO}/releases/download/${TAG}/${ZIP_NAME}"
   local JSON="${OUT_DIR}/update-ui-aarch64-${name}.json"
 

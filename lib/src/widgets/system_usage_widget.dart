@@ -2,8 +2,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:flat_buffers/flat_buffers.dart' as fb;
-import 'package:smirror_frontend/flatbufs/back_front_back_front_generated.dart' as b;
-import 'package:smirror_frontend/flatbufs/front_back_front_back_generated.dart' as f;
+import 'package:smirror_wire/generated/back_front_back_front_generated.dart' as b;
+import 'package:smirror_wire/generated/front_back_front_back_generated.dart' as f;
 import 'package:smirror_frontend/src/systems/backend_socket.dart';
 import 'package:smirror_frontend/src/widgets/base_widget.dart';
 

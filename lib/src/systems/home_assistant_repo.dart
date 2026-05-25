@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'package:flat_buffers/flat_buffers.dart' as fb;
 import 'package:injectable/injectable.dart';
-import 'package:smirror_frontend/flatbufs/dashboard_dashboard_structure_generated.dart' as b;
-import 'package:smirror_frontend/flatbufs/front_back_front_back_generated.dart' as f;
+import 'package:smirror_wire/generated/dashboard_dashboard_structure_generated.dart' as b;
+import 'package:smirror_wire/generated/front_back_front_back_generated.dart' as f;
 import 'package:smirror_frontend/src/systems/backend_socket.dart';
 
 @LazySingleton()

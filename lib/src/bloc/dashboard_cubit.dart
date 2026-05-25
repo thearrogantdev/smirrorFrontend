@@ -1,7 +1,7 @@
 import 'dart:async' show StreamSubscription, Timer;
 import 'dart:typed_data';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:smirror_frontend/flatbufs/dashboard_dashboard_structure_generated.dart' as b;
+import 'package:smirror_wire/generated/dashboard_dashboard_structure_generated.dart' as b;
 import 'package:smirror_frontend/src/systems/ha_data_service.dart';
 import 'package:smirror_frontend/src/systems/home_assistant_repo.dart';
 

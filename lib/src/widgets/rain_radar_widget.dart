@@ -9,7 +9,7 @@ import 'package:smirror_frontend/src/systems/injection.dart';
 import 'package:smirror_frontend/src/systems/token_service.dart';
 import 'package:smirror_frontend/src/widget_system/widget_property_helper.dart';
 import 'package:smirror_frontend/src/widgets/base_widget.dart';
-import 'package:smirror_widget_system/widget_ids.dart';
+import 'package:smirror_wire/constants/widget_ids.dart';
 
 /// Step interval between forecast frames, in minutes.
 const _stepIntervalMinutes = 30;

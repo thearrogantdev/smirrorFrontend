@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:smirror_frontend/src/systems/images.dart';
-import 'package:smirror_widget_system/widget_ids.dart';
+import 'package:smirror_wire/constants/widget_ids.dart';
 import 'package:smirror_frontend/src/widget_system/widget_property_helper.dart';
 import 'package:smirror_frontend/src/widgets/base_widget.dart';
 

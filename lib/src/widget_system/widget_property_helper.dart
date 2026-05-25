@@ -1,4 +1,4 @@
-import 'package:smirror_frontend/flatbufs/view_view_structure_generated.dart' as bfmsg;
+import 'package:smirror_wire/generated/view_view_structure_generated.dart' as bfmsg;
 
 String? propString(List<bfmsg.WidgetProperty>? props, int keyId) {
   if (props == null) return null;

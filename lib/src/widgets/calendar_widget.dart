@@ -2,10 +2,10 @@ import 'dart:async';
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:smirror_frontend/flatbufs/widget_internals_widget_internals_generated.dart' as bfint;
+import 'package:smirror_wire/generated/widget_internals_widget_internals_generated.dart' as bfint;
 import 'package:smirror_frontend/src/systems/injection.dart';
 import 'package:smirror_frontend/src/systems/google_calendar_service.dart';
-import 'package:smirror_widget_system/widget_ids.dart';
+import 'package:smirror_wire/constants/widget_ids.dart';
 import 'package:smirror_frontend/src/widget_system/widget_property_helper.dart';
 import 'package:smirror_frontend/src/widgets/base_widget.dart';
 

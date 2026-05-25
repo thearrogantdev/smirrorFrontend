@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:smirror_frontend/flatbufs/view_view_structure_generated.dart' as bfmsg;
+import 'package:smirror_wire/generated/view_view_structure_generated.dart' as bfmsg;
 
 /// Base class for all Smirror widgets that provides automatic scaling
 /// to prevent overflows and ensures content fits within the allocated space.

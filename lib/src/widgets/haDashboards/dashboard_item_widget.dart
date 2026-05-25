@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:smirror_frontend/flatbufs/dashboard_dashboard_structure_generated.dart' as b;
+import 'package:smirror_wire/generated/dashboard_dashboard_structure_generated.dart' as b;
 
 class DashboardItemWidget extends StatelessWidget {
   final b.DashboardItem item;

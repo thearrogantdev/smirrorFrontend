@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'dart:typed_data';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:smirror_frontend/flatbufs/back_front_back_front_generated.dart' as bfmsg;
-import 'package:smirror_frontend/flatbufs/dashboard_dashboard_structure_generated.dart' as b;
+import 'package:smirror_wire/generated/back_front_back_front_generated.dart' as bfmsg;
+import 'package:smirror_wire/generated/dashboard_dashboard_structure_generated.dart' as b;
 import 'package:smirror_frontend/src/bloc/dashboard_cubit.dart';
 import 'package:smirror_frontend/src/systems/backend_socket.dart';
 import 'package:smirror_frontend/src/systems/ha_data_service.dart';
