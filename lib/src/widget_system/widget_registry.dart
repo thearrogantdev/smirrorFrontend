@@ -20,6 +20,7 @@ import 'package:smirror_frontend/src/widgets/weather_current_widget.dart';
 import 'package:smirror_frontend/src/widgets/weather_forecast_widget.dart';
 import 'package:smirror_frontend/src/widgets/system_usage_widget.dart';
 import 'package:smirror_frontend/src/widgets/rain_radar_widget.dart';
+import 'package:smirror_frontend/src/widgets/digital_clock_widget.dart';
 
 typedef WidgetBuilderFunction = Widget Function(bfmsg.Widget widgetData);
 
@@ -45,6 +46,7 @@ class WidgetRegistry {
       WidgetIds.googleCalendarTwoDays => CalendarTwoDaysWidget(widgetData: widgetData),
       WidgetIds.systemUsage         => SystemUsageWidget(widgetData: widgetData),
       WidgetIds.rainRadar           => RainRadarWidget(widgetData: widgetData),
+      WidgetIds.digitalClock        => DigitalClockWidget(widgetData: widgetData),
       _                             => const Icon(Icons.error, color: Colors.red),
     };
   }

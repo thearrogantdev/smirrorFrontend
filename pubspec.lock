@@ -937,11 +937,9 @@ packages:
   smirror_wire:
     dependency: "direct main"
     description:
-      path: "."
-      ref: main
-      resolved-ref: "9de311a9128ca66e3eaeec5edc8d7a5b895a1199"
-      url: "https://github.com/thearrogantdev/smirrorWire"
-    source: git
+      path: "../smirrorWire"
+      relative: true
+    source: path
     version: "0.0.1"
   source_gen:
     dependency: transitive
@@ -1232,5 +1230,5 @@ packages:
     source: hosted
     version: "2.2.3"
 sdks:
-  dart: ">=3.11.4 <4.0.0"
+  dart: ">=3.10.3 <4.0.0"
   flutter: ">=3.41.0"
