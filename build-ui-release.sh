@@ -17,6 +17,42 @@ VERSION=$(grep -E '^version:' pubspec.yaml | head -1 | awk '{print $2}' | cut -d
 
 echo "==> Repo: $REPO  Version: $VERSION"
 
+# --- CORE INTEGRITY: CHECK FOR FORGOTTEN VERSION BUMP ---
+echo "==> Verifying version bump against GitHub..."
+JSON_URL="https://github.com/${REPO}/releases/latest/download/update-ui-aarch64-generic.json"
+TMP_VER=$(mktemp -d)
+
+# Download quietly, ignoring 404 if there are no releases yet
+if curl -sSfL "$JSON_URL" -o "$TMP_VER/update.json" 2>/dev/null; then
+    REMOTE_VERSION=$(jq -r '.version' "$TMP_VER/update.json" 2>/dev/null || echo "0.0.0")
+    rm -rf "$TMP_VER"
+
+    # Compare local version ($VERSION) against remote version ($REMOTE_VERSION)
+    if [[ "$VERSION" == "$REMOTE_VERSION" ]]; then
+        echo "=========================================================="
+        echo "❌ ERROR: Local version ($VERSION) matches the live version."
+        echo "   Please bump the 'version:' field in your pubspec.yaml!"
+        echo "=========================================================="
+        exit 1
+    fi
+
+    # Check if local version is actually older
+    LOWEST=$(printf '%s\n%s' "$VERSION" "$REMOTE_VERSION" | sort -V | head -n1)
+    if [[ "$LOWEST" == "$VERSION" ]]; then
+        echo "=========================================================="
+        echo "❌ ERROR: Local version ($VERSION) is OLDER than the live version ($REMOTE_VERSION)."
+        echo "   Please bump the 'version:' field in your pubspec.yaml!"
+        echo "=========================================================="
+        exit 1
+    fi
+
+    echo "  ✓ Version bump verified: Local $VERSION > Remote $REMOTE_VERSION"
+else
+    rm -rf "$TMP_VER"
+    echo "  ⚠ Could not fetch latest remote version (possibly first release). Skipping verification."
+fi
+
+
 OUT_DIR="$(pwd)/release"; mkdir -p "$OUT_DIR"
 
 build_variant() {

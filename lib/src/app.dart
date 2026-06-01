@@ -45,15 +45,15 @@ class _AppState extends State<App> {
     super.initState();
     _wakeUpSub = getIt<BackendSocket>().wakeUpStream.listen(
       (wakeUpMsg) {
-        final name = wakeUpMsg.userName ?? 'Guest';
+        final name = wakeUpMsg.userName ?? '';
         final lang = wakeUpMsg.language ?? 'en';
         setState(() {
           _currentLocale = Locale(lang);
         });
-        _startWakeUp(name);
+        _startWakeUp(name == 'admin' ? '' : name);
       },
       onError: (err) {
-        _startWakeUp('Guest');
+        _startWakeUp('');
       },
     );
 
