@@ -6,5 +6,11 @@
   "pleaseWaitAMoment": "Please wait a moment",
   "systemNotification": "System notification",
   "rainRadarNow": "Now",
-  "noEvents": "No events"
+  "noEvents": "No events",
+  "faceTrainingSearch": "Searching for face",
+  "faceTrainingSearchSub": "Please stay in front of the mirror",
+  "faceTrainingStarted": "Training started",
+  "faceTrainingStartedSub": "Face found, please wait a moment",
+  "faceTrainingDone": "Training finished",
+  "faceTrainingDoneSub": "Finished"
 }

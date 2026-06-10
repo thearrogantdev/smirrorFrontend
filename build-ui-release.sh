@@ -52,18 +52,28 @@ else
     echo "  ⚠ Could not fetch latest remote version (possibly first release). Skipping verification."
 fi
 
-
-OUT_DIR="$(pwd)/release"; mkdir -p "$OUT_DIR"
+# 1. NUKE THE ENTIRE RELEASE FOLDER AT THE START
+# This ensures no stale ZIP or JSON files from previous releases are left behind
+OUT_DIR="$(pwd)/release"
+echo "==> Cleaning old releases in $OUT_DIR..."
+rm -rf "$OUT_DIR"
+mkdir -p "$OUT_DIR"
 
 build_variant() {
   local name=$1; shift
   local cpu_args=("$@")   # e.g. --cpu=pi4 or empty
 
+  # 2. NUKE THE FLUTTER BUILD DIRECTORY
+  # This is critical! It deletes the build/ folder so the 'find' command
+  # can ONLY find the fresh app.so we are about to compile right now.
+  echo "==> Cleaning Flutter build cache..."
+  fvm flutter clean
+
   echo ""
   echo "==> Building $name..."
   fvm dart run flutterpi_tool build --arch=arm64 "${cpu_args[@]}" --release
 
-  # find newest build output containing app.so
+  # find newest build output containing app.so (guaranteed to be fresh now)
   local BUILD_DIR
   BUILD_DIR=$(find build -type f -name app.so -printf '%T@ %h\n' | sort -nr | head -1 | cut -d' ' -f2-)
   [[ -f "$BUILD_DIR/app.so" ]] || { echo "Build failed"; exit 1; }
@@ -83,6 +93,10 @@ build_variant() {
 
   local ZIP_NAME="smirror-ui-${VERSION}-aarch64-${name}.zip"
   local ZIP_PATH="${OUT_DIR}/${ZIP_NAME}"
+
+  # Double-check deletion of the specific zip (safety net)
+  rm -f "$ZIP_PATH"
+
   ( cd "$STAGE" && zip -9 -r -q "$ZIP_PATH" . )
 
   local SHA=$(sha256sum "$ZIP_PATH" | awk '{print $1}')
@@ -90,6 +104,9 @@ build_variant() {
   local TAG="${VERSION}"
   local URL="https://github.com/${REPO}/releases/download/${TAG}/${ZIP_NAME}"
   local JSON="${OUT_DIR}/update-ui-aarch64-${name}.json"
+
+  # Nuke old JSON to be 100% clean
+  rm -f "$JSON"
 
   cat > "$JSON" <<EOF
 {
@@ -102,6 +119,8 @@ build_variant() {
 }
 EOF
 
+  rm -rf "$STAGE"
+
   echo "  ✓ $ZIP_NAME  (${SIZE} bytes)"
   echo "  ✓ $(basename "$JSON")"
 }
@@ -111,4 +130,4 @@ build_variant "pi4" --cpu=pi4
 build_variant "generic"
 
 echo ""
-echo "All done. Upload both zips to the same GitHub release:"
+echo "All done. Upload both zips and manifests to the same GitHub release:"

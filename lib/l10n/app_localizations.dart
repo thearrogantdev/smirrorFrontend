@@ -139,6 +139,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No events'**
   String get noEvents;
+
+  /// No description provided for @faceTrainingSearch.
+  ///
+  /// In en, this message translates to:
+  /// **'Searching for face'**
+  String get faceTrainingSearch;
+
+  /// No description provided for @faceTrainingSearchSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Please stay in front of the mirror'**
+  String get faceTrainingSearchSub;
+
+  /// No description provided for @faceTrainingStarted.
+  ///
+  /// In en, this message translates to:
+  /// **'Training started'**
+  String get faceTrainingStarted;
+
+  /// No description provided for @faceTrainingStartedSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Face found, please wait a moment'**
+  String get faceTrainingStartedSub;
+
+  /// No description provided for @faceTrainingDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Training finished'**
+  String get faceTrainingDone;
+
+  /// No description provided for @faceTrainingDoneSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Finished'**
+  String get faceTrainingDoneSub;
 }
 
 class _AppLocalizationsDelegate

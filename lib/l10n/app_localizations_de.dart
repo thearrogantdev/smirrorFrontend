@@ -30,4 +30,24 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get noEvents => 'Keine Ereignisse';
+
+  @override
+  String get faceTrainingSearch => 'Gesichtssuche';
+
+  @override
+  String get faceTrainingSearchSub =>
+      'Bitte bleiben Sie vor dem Spiegel stehen';
+
+  @override
+  String get faceTrainingStarted => 'Training gestartet';
+
+  @override
+  String get faceTrainingStartedSub =>
+      'Gesicht gefunden, bitte warten Sie einen Moment';
+
+  @override
+  String get faceTrainingDone => 'Training beendet';
+
+  @override
+  String get faceTrainingDoneSub => 'Erfolgreich abgeschlossen';
 }

@@ -30,4 +30,22 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get noEvents => 'No events';
+
+  @override
+  String get faceTrainingSearch => 'Searching for face';
+
+  @override
+  String get faceTrainingSearchSub => 'Please stay in front of the mirror';
+
+  @override
+  String get faceTrainingStarted => 'Training started';
+
+  @override
+  String get faceTrainingStartedSub => 'Face found, please wait a moment';
+
+  @override
+  String get faceTrainingDone => 'Training finished';
+
+  @override
+  String get faceTrainingDoneSub => 'Finished';
 }

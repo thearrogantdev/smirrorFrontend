@@ -6,13 +6,13 @@ import 'package:smirror_frontend/l10n/app_localizations.dart';
 class InfoOverlay extends StatefulWidget {
   final String message;
   final bfmsg.InfoType type;
-  final Duration duration;
+  final Duration? duration;
 
   const InfoOverlay({
     super.key,
     required this.message,
     required this.type,
-    this.duration = const Duration(seconds: 5),
+    required this.duration,
   });
 
   @override
@@ -21,20 +21,22 @@ class InfoOverlay extends StatefulWidget {
 
 class _InfoOverlayState extends State<InfoOverlay>
     with SingleTickerProviderStateMixin {
-  late final AnimationController _controller;
+  AnimationController? _controller;
 
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      vsync: this,
-      duration: widget.duration,
-    )..reverse(from: 1.0); // Count down from 1.0 to 0.0
+    if (widget.duration != null) {
+      _controller = AnimationController(
+        vsync: this,
+        duration: widget.duration!,
+      )..reverse(from: 1.0); // Count down from 1.0 to 0.0
+    }
   }
 
   @override
   void dispose() {
-    _controller.dispose();
+    _controller?.dispose();
     super.dispose();
   }
 
@@ -44,8 +46,12 @@ class _InfoOverlayState extends State<InfoOverlay>
         return Icons.system_update_outlined;
       case bfmsg.InfoType.MUST_UPDATE:
         return Icons.warning_amber_outlined;
-      case bfmsg.InfoType.FACE_TRAINING:
+      case bfmsg.InfoType.FACE_TRAINING_SEARCH:
         return Icons.face_retouching_natural_outlined;
+      case bfmsg.InfoType.FACE_TRAINING_STARTED:
+        return Icons.model_training_outlined;
+      case bfmsg.InfoType.FACE_TRAINING_DONE:
+        return Icons.face_unlock_outlined;
     }
   }
 
@@ -55,8 +61,12 @@ class _InfoOverlayState extends State<InfoOverlay>
         return Colors.cyan;
       case bfmsg.InfoType.MUST_UPDATE:
         return Colors.orangeAccent;
-      case bfmsg.InfoType.FACE_TRAINING:
+      case bfmsg.InfoType.FACE_TRAINING_SEARCH:
+        return Colors.cyan;
+      case bfmsg.InfoType.FACE_TRAINING_STARTED:
         return Colors.purpleAccent;
+      case bfmsg.InfoType.FACE_TRAINING_DONE:
+        return Colors.greenAccent;
     }
   }
 
@@ -70,13 +80,32 @@ class _InfoOverlayState extends State<InfoOverlay>
         return l10n.updateAvailable;
       case bfmsg.InfoType.MUST_UPDATE:
         return l10n.criticalUpdateRequired;
-      case bfmsg.InfoType.FACE_TRAINING:
-        return l10n.inFaceTraining;
+      case bfmsg.InfoType.FACE_TRAINING_SEARCH:
+        return l10n.faceTrainingSearch;
+      case bfmsg.InfoType.FACE_TRAINING_STARTED:
+        return l10n.faceTrainingStarted;
+      case bfmsg.InfoType.FACE_TRAINING_DONE:
+        return l10n.faceTrainingDone;
+    }
+  }
+
+  String? _getSubText(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    switch (widget.type) {
+      case bfmsg.InfoType.FACE_TRAINING_SEARCH:
+        return l10n.faceTrainingSearchSub;
+      case bfmsg.InfoType.FACE_TRAINING_STARTED:
+        return l10n.faceTrainingStartedSub;
+      case bfmsg.InfoType.FACE_TRAINING_DONE:
+        return l10n.faceTrainingDoneSub;
+      default:
+        return null;
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final subText = _getSubText(context);
     return Stack(
       children: [
         // Backdrop blur
@@ -110,25 +139,26 @@ class _InfoOverlayState extends State<InfoOverlay>
               child: Stack(
                 children: [
                   // Circular timer in top right
-                  Positioned(
-                    top: 24,
-                    right: 24,
-                    child: AnimatedBuilder(
-                      animation: _controller,
-                      builder: (context, child) {
-                        return SizedBox(
-                          width: 24,
-                          height: 24,
-                          child: CircularProgressIndicator(
-                            value: _controller.value,
-                            strokeWidth: 3,
-                            color: _getColor(),
-                            backgroundColor: _getColor().withValues(alpha: 0.2),
-                          ),
-                        );
-                      },
+                  if (_controller != null)
+                    Positioned(
+                      top: 24,
+                      right: 24,
+                      child: AnimatedBuilder(
+                        animation: _controller!,
+                        builder: (context, child) {
+                          return SizedBox(
+                            width: 24,
+                            height: 24,
+                            child: CircularProgressIndicator(
+                              value: _controller!.value,
+                              strokeWidth: 3,
+                              color: _getColor(),
+                              backgroundColor: _getColor().withValues(alpha: 0.2),
+                            ),
+                          );
+                        },
+                      ),
                     ),
-                  ),
 
                   // Content
                   Padding(
@@ -162,10 +192,10 @@ class _InfoOverlayState extends State<InfoOverlay>
                             letterSpacing: 0.5,
                           ),
                         ),
-                        if (widget.type == bfmsg.InfoType.FACE_TRAINING) ...[
+                        if (subText != null) ...[
                           const SizedBox(height: 12),
                           Text(
-                            AppLocalizations.of(context)!.pleaseWaitAMoment,
+                            subText,
                             style: TextStyle(
                               color: Colors.white.withValues(alpha: 0.5),
                               fontSize: 16.0,

@@ -35,7 +35,10 @@ class _AppState extends State<App> {
   // Info overlay state
   bool _showInfo = false;
   bfmsg.InfoType _infoType = bfmsg.InfoType.CAN_UPDATE;
+  int _infoTime = 0;
   String _infoText = '';
+  Timer? _infoTimer;
+  int _infoMessageId = 0;
 
   StreamSubscription? _wakeUpSub;
   StreamSubscription? _displayInfoSub;
@@ -62,6 +65,8 @@ class _AppState extends State<App> {
       (bfmsg.DisplayInfo info) {
         if (!mounted) return;
 
+        _infoTimer?.cancel();
+
         setState(() {
           // Stop any pending welcome animation
           _isWakingUp = false;
@@ -73,22 +78,39 @@ class _AppState extends State<App> {
           
           // Update info state
           _infoType = info.type;
+          _infoTime = info.time;
           _infoText = ''; // Use empty string to let InfoOverlay show translated text
           _showInfo = true;
+          _infoMessageId++;
         });
 
-        // Auto-dismiss after 4 seconds
-        Future.delayed(const Duration(milliseconds: infoDuration), () {
-          if (mounted) setState(() => _showInfo = false);
-        });
+        final duration = _getInfoDuration(info.type, info.time);
+        if (duration != null) {
+          _infoTimer = Timer(duration, () {
+            if (mounted) {
+              setState(() => _showInfo = false);
+            }
+          });
+        }
       },
     );
+  }
+
+  Duration? _getInfoDuration(bfmsg.InfoType type, int time) {
+    if (time > 0) {
+      return Duration(seconds: time);
+    }
+    if (type == bfmsg.InfoType.FACE_TRAINING_STARTED) {
+      return null;
+    }
+    return const Duration(seconds: 30);
   }
 
   @override
   void dispose() {
     _wakeUpSub?.cancel();
     _displayInfoSub?.cancel();
+    _infoTimer?.cancel();
     _pageController.dispose();
     super.dispose();
   }
@@ -194,9 +216,10 @@ class _AppState extends State<App> {
                         duration: const Duration(milliseconds: 300),
                         child: IgnorePointer(
                           child: InfoOverlay(
+                            key: ValueKey(_infoMessageId),
                             message: _infoText,
                             type: _infoType,
-                            duration: const Duration(milliseconds: infoDuration),
+                            duration: _getInfoDuration(_infoType, _infoTime),
                           ),
                         ),
                       ),

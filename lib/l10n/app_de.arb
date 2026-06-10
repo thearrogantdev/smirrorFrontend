@@ -6,5 +6,11 @@
   "pleaseWaitAMoment": "Bitte warten Sie einen Moment",
   "systemNotification": "Systembenachrichtigung",
   "rainRadarNow": "Jetzt",
-  "noEvents": "Keine Ereignisse"
+  "noEvents": "Keine Ereignisse",
+  "faceTrainingSearch": "Gesichtssuche",
+  "faceTrainingSearchSub": "Bitte bleiben Sie vor dem Spiegel stehen",
+  "faceTrainingStarted": "Training gestartet",
+  "faceTrainingStartedSub": "Gesicht gefunden, bitte warten Sie einen Moment",
+  "faceTrainingDone": "Training beendet",
+  "faceTrainingDoneSub": "Erfolgreich abgeschlossen"
 }
