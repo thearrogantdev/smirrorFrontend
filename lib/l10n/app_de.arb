@@ -12,5 +12,6 @@
   "faceTrainingStarted": "Training gestartet",
   "faceTrainingStartedSub": "Gesicht gefunden, bitte warten Sie einen Moment",
   "faceTrainingDone": "Training beendet",
-  "faceTrainingDoneSub": "Erfolgreich abgeschlossen"
+  "faceTrainingDoneSub": "Erfolgreich abgeschlossen",
+  "identifyUser": "Benutzer identifizieren"
 }

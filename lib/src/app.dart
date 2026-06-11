@@ -28,6 +28,7 @@ class _AppState extends State<App> {
   final PageController _pageController = PageController();
   bool _isStandby = true;
   bool _isWakingUp = false;
+  bool _isIdentifyingUser = false;
   bool _showOverlay = false;
   String _userName = '';
   Locale _currentLocale = const Locale('en');
@@ -119,6 +120,7 @@ class _AppState extends State<App> {
     setState(() {
       _userName = userName;
       _isStandby = false;
+      _isIdentifyingUser = false;
       _isWakingUp = true;
       _showOverlay = true;
     });
@@ -179,8 +181,17 @@ class _AppState extends State<App> {
                     case bfmsg.SimpleCommandType.STANDBY:
                       setState(() {
                         _isStandby = true;
+                        _isIdentifyingUser = false;
                         _showOverlay = false;
                         _showInfo = false; // Also dismiss info on standby
+                      });
+                      break;
+                    case bfmsg.SimpleCommandType.IDENTIFY_USER:
+                      setState(() {
+                        _isStandby = false;
+                        _isIdentifyingUser = true;
+                        _isWakingUp = false;
+                        _showOverlay = true;
                       });
                       break;
                     default:
@@ -198,14 +209,21 @@ class _AppState extends State<App> {
                     else if (currentPages.isNotEmpty)
                       _buildPageView(),
 
-                    // Welcome overlay on top while waking up
+                    // Welcome overlay on top while waking up or identifying user
                     if (_showOverlay)
                       AnimatedOpacity(
-                        opacity: _isWakingUp ? 1.0 : 0.0,
+                        opacity: (_isWakingUp || _isIdentifyingUser) ? 1.0 : 0.0,
                         duration: const Duration(milliseconds: 500),
-                        onEnd: () => setState(() => _showOverlay = false),
+                        onEnd: () {
+                          if (!_isIdentifyingUser) {
+                            setState(() => _showOverlay = false);
+                          }
+                        },
                         child: IgnorePointer(
-                          child: _WelcomeOverlay(userName: _userName),
+                          child: _WelcomeOverlay(
+                            userName: _userName,
+                            isIdentifyingUser: _isIdentifyingUser,
+                          ),
                         ),
                       ),
 
@@ -288,8 +306,12 @@ class _AppState extends State<App> {
 
 class _WelcomeOverlay extends StatefulWidget {
   final String userName;
+  final bool isIdentifyingUser;
 
-  const _WelcomeOverlay({required this.userName});
+  const _WelcomeOverlay({
+    required this.userName,
+    required this.isIdentifyingUser,
+  });
 
   @override
   State<_WelcomeOverlay> createState() => _WelcomeOverlayState();
@@ -300,7 +322,30 @@ class _WelcomeOverlayState extends State<_WelcomeOverlay>
   late final AnimationController _controller = AnimationController(
     vsync: this,
     duration: const Duration(milliseconds: welcomeAnimationTime),
-  )..forward();
+  );
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.isIdentifyingUser) {
+      _controller.repeat();
+    } else {
+      _controller.forward();
+    }
+  }
+
+  @override
+  void didUpdateWidget(_WelcomeOverlay oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.isIdentifyingUser != widget.isIdentifyingUser ||
+        oldWidget.userName != widget.userName) {
+      if (widget.isIdentifyingUser) {
+        _controller.repeat();
+      } else {
+        _controller.forward(from: 0.0);
+      }
+    }
+  }
 
   @override
   void dispose() {
@@ -310,6 +355,9 @@ class _WelcomeOverlayState extends State<_WelcomeOverlay>
 
   @override
   Widget build(BuildContext context) {
+    final text = widget.isIdentifyingUser
+        ? (AppLocalizations.of(context)?.identifyUser ?? 'Identify User')
+        : 'Welcome ${widget.userName}';
     return ColoredBox(
       color: Colors.black,
       child: Center(
@@ -317,7 +365,7 @@ class _WelcomeOverlayState extends State<_WelcomeOverlay>
           animation: _controller,
           // child is cached — Text is never rebuilt, only the shader changes
           child: Text(
-            'Welcome ${widget.userName}',
+            text,
             style: const TextStyle(color: Colors.white, fontSize: 64),
           ),
           builder: (context, child) {

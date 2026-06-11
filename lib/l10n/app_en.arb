@@ -12,5 +12,6 @@
   "faceTrainingStarted": "Training started",
   "faceTrainingStartedSub": "Face found, please wait a moment",
   "faceTrainingDone": "Training finished",
-  "faceTrainingDoneSub": "Finished"
+  "faceTrainingDoneSub": "Finished",
+  "identifyUser": "Identify User"
 }

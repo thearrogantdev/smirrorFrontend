@@ -175,6 +175,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Finished'**
   String get faceTrainingDoneSub;
+
+  /// No description provided for @identifyUser.
+  ///
+  /// In en, this message translates to:
+  /// **'Identify User'**
+  String get identifyUser;
 }
 
 class _AppLocalizationsDelegate

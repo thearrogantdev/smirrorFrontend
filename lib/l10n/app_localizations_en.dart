@@ -48,4 +48,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get faceTrainingDoneSub => 'Finished';
+
+  @override
+  String get identifyUser => 'Identify User';
 }
