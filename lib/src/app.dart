@@ -298,8 +298,8 @@ class _AppState extends State<App> {
 
     _pageController.animateToPage(
       target,
-      duration: const Duration(milliseconds: 200),
-      curve: Curves.easeInOut,
+      duration: const Duration(milliseconds: 150),
+      curve: Curves.easeOut,
     );
   }
 }

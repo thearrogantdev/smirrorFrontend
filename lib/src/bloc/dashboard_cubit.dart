@@ -49,17 +49,27 @@ class HADashboardCubit extends Cubit<HADashboardViewState?> {
     final dashboardData = _deserializeDashboardData(currentLayout);
     final items = dashboardData?.items ?? const [];
 
-    await _haData.refreshAllStates();
-
-    final Map<String, String> localValues = {};
+    // Immediately emit with cached state for fast UI response
+    final Map<String, String> initialValues = {};
     for (final item in items) {
       final entityId = item.entityId ?? '';
-      localValues[entityId] = _haData.getCachedStateSync(entityId);
+      initialValues[entityId] = _haData.getCachedStateSync(entityId);
     }
 
     if (!isClosed) {
-      emit(HADashboardViewState(currentLayout, dashboardData, localValues));
+      emit(HADashboardViewState(currentLayout, dashboardData, initialValues));
     }
+
+    // Then update values asynchronously
+    _haData.refreshAllStates().then((_) {
+      if (isClosed) return;
+      final Map<String, String> updatedValues = {};
+      for (final item in items) {
+        final entityId = item.entityId ?? '';
+        updatedValues[entityId] = _haData.getCachedStateSync(entityId);
+      }
+      emit(HADashboardViewState(currentLayout, dashboardData, updatedValues));
+    });
   }
 
   @override

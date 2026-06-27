@@ -223,8 +223,28 @@ class _EventTile extends StatelessWidget {
     required this.fontFamily,
   });
 
-  String _hhmm(DateTime dt) =>
-      '${dt.hour.toString().padLeft(2, '0')}:${dt.minute.toString().padLeft(2, '0')}';
+  String _formatTime(DateTime date) {
+    return "${date.hour.toString().padLeft(2, '0')}:${date.minute.toString().padLeft(2, '0')}";
+  }
+
+  String _formatDayMonth(DateTime date) {
+    const months = [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
+    ];
+
+    return '${date.day} ${months[date.month - 1]}';
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -233,21 +253,33 @@ class _EventTile extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 3),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (!event.isAllDay) ...[
-            SizedBox(
-              width: fontSize * 3.5,
-              child: Text(
-                _hhmm(event.start.toLocal()),
-                style: baseStyle.copyWith(
-                  color: Colors.white54,
-                  fontSize: fontSize * 0.9,
-                ),
+          // Date
+          SizedBox(
+            width: fontSize * 4.5,
+            child: Text(
+              _formatDayMonth(event.start),
+              style: baseStyle.copyWith(
+                color: Colors.white54,
+                fontSize: fontSize * 0.9,
               ),
             ),
-            const SizedBox(width: 8),
-          ],
+          ),
+          const SizedBox(width: 8),
+          // Time (if not all day)
+          SizedBox(
+            width: fontSize * 3.5,
+            child: Text(
+              event.isAllDay ? '' : _formatTime(event.start),
+              style: baseStyle.copyWith(
+                color: Colors.white54,
+                fontSize: fontSize * 0.9,
+              ),
+            ),
+          ),
+          const SizedBox(width: 8),
+          // Title
           Expanded(
             child: Text(
               event.title,

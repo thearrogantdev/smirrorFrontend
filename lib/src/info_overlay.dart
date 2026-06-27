@@ -1,4 +1,3 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:smirror_wire/generated/back_front_back_front_generated.dart' as bfmsg;
 import 'package:smirror_frontend/l10n/app_localizations.dart';
@@ -108,12 +107,9 @@ class _InfoOverlayState extends State<InfoOverlay>
     final subText = _getSubText(context);
     return Stack(
       children: [
-        // Backdrop blur
+        // Backdrop overlay
         Positioned.fill(
-          child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
-            child: Container(color: Colors.black.withValues(alpha: 0.3)),
-          ),
+          child: Container(color: Colors.black.withValues(alpha: 0.65)),
         ),
         // Centered popup
         Center(

@@ -52,19 +52,17 @@ class TokenService {
   }
 
   Future<Token> getToken(String provider, {Duration? timeout}) async {
-    // 1. Check Cache - if valid, return immediately
+    // Check Cache - if valid, return immediately
     final cached = _cache[provider];
     if (cached != null && !cached.isExpired) return cached;
 
-    // 2. Handle Duplicate Requests
+    // Handle Duplicate Requests
     final existing = _inFlight[provider];
     if (existing != null) return existing.future;
 
-    // 4. Create the trap BEFORE sending the request
     final c = Completer<Token>();
     _inFlight[provider] = c;
 
-    // 5. Send the request to backend
     _socket.send(_buildGetTokenRequest(provider));
 
     final t = timeout ?? _timeout;

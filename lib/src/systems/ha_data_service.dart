@@ -21,12 +21,7 @@ class HomeAssistantDataService {
   // To avoid multiple concurrent HTTP calls to HA
   Completer<void>? _syncInFlight;
 
-  // The URL should probably come from your backend config
-  String _haUrl = '';
-
   HomeAssistantDataService(this._tokenService);
-
-  void setUrl(String url) => _haUrl = url;
 
   /// Returns the state of a single entity.
   /// If missing or older than 30 seconds, triggers a background sync.
@@ -55,13 +50,12 @@ class HomeAssistantDataService {
 
     _syncInFlight = Completer<void>();
     try {
-      // 1. Get the token from our TokenService
       final token = await _tokenService.getToken('HomeAssistant');
-      _haUrl = token.url ?? ""; 
-      if(_haUrl.isEmpty) return;
-      // 2. Fetch all states from HA
+      final haUrl = token.url ?? "";
+      if(haUrl.isEmpty) return;
+      // Fetch all states from HA
       final response = await http.get(
-        Uri.parse('${_haUrl.endsWith('/') ? _haUrl : '$_haUrl/'}api/states'),
+        Uri.parse('${haUrl.endsWith('/') ? haUrl : '$haUrl/'}api/states'),
         headers: {
           'Authorization': 'Bearer ${token.accessToken}',
           'Content-Type': 'application/json',

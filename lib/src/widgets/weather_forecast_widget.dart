@@ -108,9 +108,30 @@ class _WeatherForecastWidgetState extends SmirrorState<WeatherForecastWidget> {
                             style: Theme.of(context).textTheme.bodyMedium,
                           ),
                           const SizedBox(height: 6),
-                          Text(
-                            '💧 ${data.humidity}%   🌬 ${data.windSpeed.toStringAsFixed(1)} m/s',
-                            style: Theme.of(context).textTheme.bodySmall,
+                          Row(
+                            children: [
+                              Icon(
+                                Icons.water_drop_outlined,
+                                size: 14,
+                                color: Theme.of(context).textTheme.bodySmall?.color,
+                              ),
+                              const SizedBox(width: 4),
+                              Text(
+                                '${data.humidity}%',
+                                style: Theme.of(context).textTheme.bodySmall,
+                              ),
+                              const SizedBox(width: 12),
+                              Icon(
+                                Icons.air,
+                                size: 14,
+                                color: Theme.of(context).textTheme.bodySmall?.color,
+                              ),
+                              const SizedBox(width: 4),
+                              Text(
+                                '${data.windSpeed.toStringAsFixed(1)} m/s',
+                                style: Theme.of(context).textTheme.bodySmall,
+                              ),
+                            ],
                           ),
                         ],
                       ),

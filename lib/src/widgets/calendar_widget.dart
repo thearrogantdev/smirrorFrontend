@@ -146,16 +146,20 @@ class _EventTile extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Time or Icon for all-day
+          // Date
           SizedBox(
             width: fontSize * 4.5,
-            child: event.isAllDay
-                ? Text(
+            child: Text(
               _formatDayMonth(event.start),
               style: textStyle.copyWith(color: Colors.white54, fontSize: fontSize * 0.9),
-            )
-                : Text(
-              _formatTime(event.start),
+            ),
+          ),
+          const SizedBox(width: 8),
+          // Time (if not all day)
+          SizedBox(
+            width: fontSize * 3.5,
+            child: Text(
+              event.isAllDay ? '' : _formatTime(event.start),
               style: textStyle.copyWith(color: Colors.white54, fontSize: fontSize * 0.9),
             ),
           ),
