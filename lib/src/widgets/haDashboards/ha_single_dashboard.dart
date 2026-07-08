@@ -1,19 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
+import 'package:smirror_wire/generated/view_view_structure_generated.dart' as bfmsg;
 import 'package:smirror_frontend/src/bloc/dashboard_cubit.dart';
 import 'package:smirror_frontend/src/systems/ha_data_service.dart';
 import 'package:smirror_frontend/src/systems/home_assistant_repo.dart';
 import 'package:smirror_wire/constants/widget_ids.dart';
 import 'package:smirror_frontend/src/widget_system/widget_property_helper.dart';
 import 'package:smirror_frontend/src/widgets/haDashboards/dashboard_display_grid.dart' show DashboardDisplayGrid;
-import 'package:smirror_frontend/src/widgets/base_widget.dart';
 
-class HASingleDashboard extends SmirrorStatelessWidget {
-  const HASingleDashboard({super.key, required super.widgetData});
+class HASingleDashboard extends StatelessWidget {
+  final bfmsg.Widget widgetData;
+
+  const HASingleDashboard({super.key, required this.widgetData});
 
   @override
-  Widget buildContent(BuildContext context) {
+  Widget build(BuildContext context) {
     final dashboardID = propInt(widgetData.properties, PropertyIdsSingleHADashboard.dashboardID) ?? 0;
 
     if (dashboardID == 0) return const Center(child: Text("No Dashboard ID set"));
@@ -31,7 +33,7 @@ class HASingleDashboard extends SmirrorStatelessWidget {
             return const Center(child: CircularProgressIndicator());
           }
 
-          return DashboardDisplayGrid(state: state);
+          return DashboardDisplayGrid(state: state, widgetData: widgetData);
         },
       ),
     );

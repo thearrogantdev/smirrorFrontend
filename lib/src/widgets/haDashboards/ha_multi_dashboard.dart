@@ -10,10 +10,11 @@ import 'package:smirror_frontend/src/systems/ha_data_service.dart';
 import 'package:smirror_frontend/src/systems/home_assistant_repo.dart';
 import 'package:smirror_wire/constants/widget_ids.dart';
 import 'package:smirror_frontend/src/widgets/haDashboards/dashboard_display_grid.dart';
-import 'package:smirror_frontend/src/widgets/base_widget.dart';
 
-class MultiHADashboardWidget extends SmirrorStatelessWidget {
-  const MultiHADashboardWidget({super.key, required super.widgetData});
+class MultiHADashboardWidget extends StatelessWidget {
+  final bfmsg.Widget widgetData;
+
+  const MultiHADashboardWidget({super.key, required this.widgetData});
 
   List<int> _extractIds() {
     // Get the RawBytesValue payload from FlatBuffer
@@ -38,7 +39,7 @@ class MultiHADashboardWidget extends SmirrorStatelessWidget {
   }
 
   @override
-  Widget buildContent(BuildContext context) {
+  Widget build(BuildContext context) {
     final ids = _extractIds();
 
     if (ids.isEmpty) return const SizedBox.shrink();
@@ -56,7 +57,7 @@ class MultiHADashboardWidget extends SmirrorStatelessWidget {
 
           return Stack(
             children: [
-              DashboardDisplayGrid(state: state),
+              DashboardDisplayGrid(state: state, widgetData: widgetData),
             ],
           );
         },

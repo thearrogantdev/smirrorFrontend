@@ -27,8 +27,6 @@ class DashboardItemWidget extends StatelessWidget {
     int activeIcon = item.standardIconCodePoint;
     int activeColor = item.standardColorValue;
 
-    if(activeIcon == 0) return SizedBox.shrink();
-
     if (item.type != b.DashboardItemType.String) {
       final double numericValue = _parseValue(liveValue);
       double highestTriggerMet = -double.infinity;
@@ -46,13 +44,31 @@ class DashboardItemWidget extends StatelessWidget {
     return Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
-            IconData(activeIcon, fontFamily: 'MaterialIcons'),
-            color: mainColor,
-            size: 32,
+          if (activeIcon != 0)
+            Icon(
+              IconData(activeIcon, fontFamily: 'MaterialIcons'),
+              color: mainColor,
+              size: 32,
+            )
+          else
+            Icon(
+              Icons.block,
+              color: mainColor.withValues(alpha: 0.5),
+              size: 32,
+            ),
+          const SizedBox(height: 4),
+          Text(
+            item.displayName ?? '',
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 10,
+              fontWeight: FontWeight.w500,
+            ),
+            overflow: TextOverflow.ellipsis,
+            textAlign: TextAlign.center,
           ),
           Text(
-            "$liveValue ${item.unitOverride ?? ''}",
+            liveValue + (item.unitOverride ?? ''),
             style: TextStyle(
               color: mainColor.withValues(alpha: 0.7),
               fontSize: 9,

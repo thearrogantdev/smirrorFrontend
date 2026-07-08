@@ -68,12 +68,6 @@ class _RainRadarWidgetState extends SmirrorState<RainRadarWidget> {
   DateTime get _forecastTime =>
       DateTime.now().add(Duration(minutes: _forecastStepMinutes[_stepIndex]));
 
-  /// Unix timestamp (seconds) for the current forecast step, or null for "now".
-  int? get _forecastUnixTs {
-    final offsetMin = _forecastStepMinutes[_stepIndex];
-    if (offsetMin == 0) return null;
-    return _forecastTime.millisecondsSinceEpoch ~/ 1000;
-  }
 
   /// Human-readable label shown in the widget overlay.
   String _forecastLabel(BuildContext context) {
@@ -116,11 +110,9 @@ class _RainRadarWidgetState extends SmirrorState<RainRadarWidget> {
               return const Center(child: Text('Token leer'));
             }
 
-            // Build the precipitation tile URL, optionally with a date param.
-            final ts = _forecastUnixTs;
-            final precipUrl = ts != null
-                ? 'https://tile.openweathermap.org/map/precipitation_new/{z}/{x}/{y}.png?appid=$token&date=$ts'
-                : 'https://tile.openweathermap.org/map/precipitation_new/{z}/{x}/{y}.png?appid=$token';
+            // OpenWeatherMap 1.0 (tile.openweathermap.org) only supports current precipitation
+            // and does not support the 'date' parameter, which causes 400 Bad Request/401 Unauthorized.
+            final precipUrl = 'https://tile.openweathermap.org/map/precipitation_new/{z}/{x}/{y}.png?appid=$token';
 
             return SizedBox(
               width: widget.widgetData.width.toDouble(),
@@ -144,9 +136,10 @@ class _RainRadarWidgetState extends SmirrorState<RainRadarWidget> {
                             userAgentPackageName: 'com.smirror.app',
                           ),
                           TileLayer(
-                            key: ValueKey(precipUrl),
+                            key: const ValueKey('precipitation'),
                             urlTemplate: precipUrl,
                             tileProvider: NetworkTileProvider(),
+                            userAgentPackageName: 'com.smirror.app',
                             maxZoom: 18,
                           ),
                         ],
