@@ -63,6 +63,7 @@ class DashboardDisplayGrid extends StatelessWidget {
           ...List.generate(itemsCount, (index) {
             final item = state.items[index];
             final liveValue = state.values[item.entityId] ?? '...';
+            final defaultUnit = state.units[item.entityId] ?? '';
 
             return Positioned(
               left: item.xPos.toDouble(),
@@ -72,6 +73,7 @@ class DashboardDisplayGrid extends StatelessWidget {
               child: DashboardItemWidget(
                 item: item,
                 liveValue: liveValue,
+                defaultUnit: defaultUnit,
               ),
             );
           }),

@@ -7,8 +7,9 @@ import 'package:smirror_frontend/src/systems/token_service.dart';
 
 class HAState {
   final String state;
+  final String? unit;
   final DateTime lastUpdated;
-  HAState(this.state, this.lastUpdated);
+  HAState(this.state, this.lastUpdated, {this.unit});
 }
 
 @LazySingleton()
@@ -69,7 +70,9 @@ class HomeAssistantDataService {
         for (var item in data) {
           final id = item['entity_id'] as String;
           final stateVal = item['state'] as String;
-          _cache[id] = HAState(stateVal, now);
+          final attribs = item['attributes'] as Map<String, dynamic>?;
+          final unit = attribs?['unit_of_measurement'] as String?;
+          _cache[id] = HAState(stateVal, now, unit: unit);
         }
       }
     } catch (e) {
@@ -82,5 +85,9 @@ class HomeAssistantDataService {
 
   String getCachedStateSync(String entityId) {
     return _cache[entityId]?.state ?? 'unavailable';
+  }
+
+  String? getCachedUnitSync(String entityId) {
+    return _cache[entityId]?.unit;
   }
 }

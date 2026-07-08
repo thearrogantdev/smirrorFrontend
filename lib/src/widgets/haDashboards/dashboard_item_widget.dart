@@ -4,11 +4,13 @@ import 'package:smirror_wire/generated/dashboard_dashboard_structure_generated.d
 class DashboardItemWidget extends StatelessWidget {
   final b.DashboardItem item;
   final String liveValue;
+  final String? defaultUnit;
 
   const DashboardItemWidget({
     super.key,
     required this.item,
     required this.liveValue,
+    this.defaultUnit,
   });
 
   /// 1. Parse the string value from Home Assistant into a double
@@ -41,40 +43,64 @@ class DashboardItemWidget extends StatelessWidget {
       }
     }
     final Color mainColor = Color(activeColor);
-    return Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          if (activeIcon != 0)
-            Icon(
-              IconData(activeIcon, fontFamily: 'MaterialIcons'),
-              color: mainColor,
-              size: 32,
-            )
-          else
-            Icon(
-              Icons.block,
-              color: mainColor.withValues(alpha: 0.5),
-              size: 32,
-            ),
-          const SizedBox(height: 4),
-          Text(
-            item.displayName ?? '',
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 10,
-              fontWeight: FontWeight.w500,
-            ),
-            overflow: TextOverflow.ellipsis,
-            textAlign: TextAlign.center,
-          ),
-          Text(
-            liveValue + (item.unitOverride ?? ''),
-            style: TextStyle(
-              color: mainColor.withValues(alpha: 0.7),
-              fontSize: 9,
-            ),
-          ),
-        ],
+
+    final Widget iconWidget = activeIcon != 0
+        ? Icon(
+            IconData(activeIcon, fontFamily: 'MaterialIcons'),
+            color: mainColor,
+            size: 32,
+          )
+        : Icon(
+            Icons.block,
+            color: mainColor.withValues(alpha: 0.5),
+            size: 32,
+          );
+
+    final String unit = (item.unitOverride != null && item.unitOverride!.isNotEmpty)
+        ? item.unitOverride!
+        : (defaultUnit ?? '');
+
+    final Widget valueWidget = Text(
+      liveValue + unit,
+      style: TextStyle(
+        color: mainColor.withValues(alpha: 0.7),
+        fontSize: item.valueFontSize,
+      ),
     );
+
+    if (item.valuePosition == b.ValuePosition.Left) {
+      // Left
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          valueWidget,
+          const SizedBox(width: 4),
+          iconWidget,
+        ],
+      );
+    } else if (item.valuePosition == b.ValuePosition.Right) {
+      // Right
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          iconWidget,
+          const SizedBox(width: 4),
+          valueWidget,
+        ],
+      );
+    } else {
+      // Bottom
+      return Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          iconWidget,
+          const SizedBox(height: 4),
+          valueWidget,
+        ],
+      );
+    }
   }
 }

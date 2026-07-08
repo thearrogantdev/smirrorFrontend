@@ -70,22 +70,26 @@ class MergedMultiDashboardCubit extends Cubit<HADashboardViewState?> {
 
     // Immediately emit with cached state for fast UI response
     final Map<String, String> initialValues = {};
+    final Map<String, String> initialUnits = {};
     for (final item in items) {
       final eId = item.entityId ?? '';
       initialValues[eId] = _haData.getCachedStateSync(eId);
+      initialUnits[eId] = _haData.getCachedUnitSync(eId) ?? '';
     }
     
-    if (!isClosed) emit(HADashboardViewState(layout, dashboardData, initialValues));
+    if (!isClosed) emit(HADashboardViewState(layout, dashboardData, initialValues, initialUnits));
 
     // Then update values asynchronously
     _haData.refreshAllStates().then((_) {
       if (isClosed) return;
       final Map<String, String> updatedValues = {};
+      final Map<String, String> updatedUnits = {};
       for (final item in items) {
         final eId = item.entityId ?? '';
         updatedValues[eId] = _haData.getCachedStateSync(eId);
+        updatedUnits[eId] = _haData.getCachedUnitSync(eId) ?? '';
       }
-      emit(HADashboardViewState(layout, dashboardData, updatedValues));
+      emit(HADashboardViewState(layout, dashboardData, updatedValues, updatedUnits));
     });
   }
 

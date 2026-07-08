@@ -9,8 +9,9 @@ class HADashboardViewState {
   final b.Dashboard dashboard;
   final b.DashboardData? dashboardData;
   final Map<String, String> values;
+  final Map<String, String> units;
 
-  HADashboardViewState(this.dashboard, this.dashboardData, this.values);
+  HADashboardViewState(this.dashboard, this.dashboardData, this.values, this.units);
 
   List<b.DashboardItem> get items => dashboardData?.items ?? const [];
 }
@@ -51,24 +52,28 @@ class HADashboardCubit extends Cubit<HADashboardViewState?> {
 
     // Immediately emit with cached state for fast UI response
     final Map<String, String> initialValues = {};
+    final Map<String, String> initialUnits = {};
     for (final item in items) {
       final entityId = item.entityId ?? '';
       initialValues[entityId] = _haData.getCachedStateSync(entityId);
+      initialUnits[entityId] = _haData.getCachedUnitSync(entityId) ?? '';
     }
 
     if (!isClosed) {
-      emit(HADashboardViewState(currentLayout, dashboardData, initialValues));
+      emit(HADashboardViewState(currentLayout, dashboardData, initialValues, initialUnits));
     }
 
     // Then update values asynchronously
     _haData.refreshAllStates().then((_) {
       if (isClosed) return;
       final Map<String, String> updatedValues = {};
+      final Map<String, String> updatedUnits = {};
       for (final item in items) {
         final entityId = item.entityId ?? '';
         updatedValues[entityId] = _haData.getCachedStateSync(entityId);
+        updatedUnits[entityId] = _haData.getCachedUnitSync(entityId) ?? '';
       }
-      emit(HADashboardViewState(currentLayout, dashboardData, updatedValues));
+      emit(HADashboardViewState(currentLayout, dashboardData, updatedValues, updatedUnits));
     });
   }
 
