@@ -2,6 +2,8 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:injectable/injectable.dart';
 import 'package:http/http.dart' as http;
+import 'package:get_it/get_it.dart';
+import 'package:smirror_frontend/src/systems/backend_socket.dart';
 import 'token_service.dart';
 
 @immutable
@@ -65,6 +67,9 @@ class GoogleCalendarService {
     int maxResults = 5,
     String? timeZone, // e.g. 'Europe/Berlin'
   }) async {
+    if (GetIt.I<BackendSocket>().isStandby) {
+      return const <GCalEvent>[];
+    }
     final token = await _tokenService.getToken('google');
     if (token.accessToken.isEmpty) {
       throw Exception('Google access token not available.');
@@ -184,6 +189,9 @@ class GoogleCalendarService {
     int maxResults = 50,
     String? timeZone,
   }) async {
+    if (GetIt.I<BackendSocket>().isStandby) {
+      return const <GCalEvent>[];
+    }
     final token = await _tokenService.getToken('google');
     if (token.accessToken.isEmpty) {
       throw Exception('Google access token not available.');

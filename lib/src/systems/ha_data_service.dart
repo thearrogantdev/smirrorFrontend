@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:injectable/injectable.dart';
+import 'package:get_it/get_it.dart';
+import 'package:smirror_frontend/src/systems/backend_socket.dart';
 import 'package:smirror_frontend/src/systems/token_service.dart';
 
 class HAState {
@@ -47,6 +49,9 @@ class HomeAssistantDataService {
   /// Fetches all states from HA in a single request.
   /// This is the most efficient way to populate the cache for the whole dashboard.
   Future<void> refreshAllStates() async {
+    if (GetIt.I<BackendSocket>().isStandby) {
+      return;
+    }
     if (_syncInFlight != null) return _syncInFlight!.future;
 
     _syncInFlight = Completer<void>();

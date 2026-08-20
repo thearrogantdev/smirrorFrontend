@@ -13,6 +13,8 @@ class MergedMultiDashboardCubit extends Cubit<HADashboardViewState?> {
   final HomeAssistantRepository _repo;
   final HomeAssistantDataService _haData;
   final BackendSocket _socket;
+  final bfmsg.SimpleCommandType nextDashboardGesture;
+  final bfmsg.SimpleCommandType prevDashboardGesture;
 
   int _currentIndex = 0;
   StreamSubscription? _layoutSub;
@@ -20,14 +22,16 @@ class MergedMultiDashboardCubit extends Cubit<HADashboardViewState?> {
   Timer? _pollingTimer;
 
   MergedMultiDashboardCubit(
-      this.dashboardIds,
-      this._repo,
-      this._haData,
-      this._socket,
-      ) : super(null) {
+    this.dashboardIds,
+    this._repo,
+    this._haData,
+    this._socket, {
+    this.nextDashboardGesture = bfmsg.SimpleCommandType.UP,
+    this.prevDashboardGesture = bfmsg.SimpleCommandType.DOWN,
+  }) : super(null) {
     _commandSub = _socket.simpleCommandStream.listen((cmd) {
-      if (cmd.type == bfmsg.SimpleCommandType.UP) _switch(1);
-      if (cmd.type == bfmsg.SimpleCommandType.DOWN) _switch(-1);
+      if (cmd.type == nextDashboardGesture) _switch(1);
+      if (cmd.type == prevDashboardGesture) _switch(-1);
     });
 
     _pollingTimer = Timer.periodic(const Duration(seconds: 10), (_) => _refreshData());

@@ -6,7 +6,7 @@ import 'package:smirror_wire/generated/view_view_structure_generated.dart' as v_
 import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:smirror_wire/generated/back_front_back_front_generated.dart' as b;
-import 'package:package_info_plus/package_info_plus.dart';
+import 'package:flutter/services.dart' show rootBundle;
 import 'package:smirror_wire/generated/front_back_front_back_generated.dart' as fb_front;
 
 
@@ -19,6 +19,8 @@ class BackendSocket {
   StreamSubscription? _sub;
   bool _connected = false;
   bool get isConnected => _connected;
+
+  bool isStandby = true;
 
   bool _isConnecting = false;
   Timer? _reconnectTimer;
@@ -134,15 +136,19 @@ class BackendSocket {
 
   Future<void> _sendVersionInfo() async {
     try {
-      final packageInfo = await PackageInfo.fromPlatform();
-      final version = packageInfo.version;
+      final pubspecContent = await rootBundle.loadString('pubspec.yaml');
+      final match = RegExp(r'^version:\s*([^\s+]+)', multiLine: true).firstMatch(pubspecContent);
+      final rawVersion = match?.group(1);
+      final version = rawVersion?.replaceAll(RegExp("[\"']"), '');
 
-      final builder = fb_front.FrontBackMessageObjectBuilder(
-        payloadType: fb_front.FrontBackPayloadTypeId.VersionInfo,
-        payload: fb_front.VersionInfoObjectBuilder(version: version),
-      );
+      if (version != null && version.isNotEmpty) {
+        final builder = fb_front.FrontBackMessageObjectBuilder(
+          payloadType: fb_front.FrontBackPayloadTypeId.VersionInfo,
+          payload: fb_front.VersionInfoObjectBuilder(version: version),
+        );
 
-      send(builder.toBytes());
+        send(builder.toBytes());
+      }
     } catch (e) {
       // Ignore errors in version info sending
     }

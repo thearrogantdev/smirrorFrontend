@@ -23,6 +23,9 @@ class FakeBackendSocket implements BackendSocket {
   bool get isConnected => true;
 
   @override
+  bool isStandby = true;
+
+  @override
   Stream<b.GetToken> get tokenStream => tokenCtrl.stream;
   @override
   Stream<v_struct.View> get viewStream => viewCtrl.stream;

@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:injectable/injectable.dart';
+import 'package:get_it/get_it.dart';
+import 'package:smirror_frontend/src/systems/backend_socket.dart';
 
 class PokemonData {
   final int id;
@@ -36,6 +38,9 @@ class PokemonDataService {
   final Map<int, PokemonData> _pokemonCache = {};
 
   Future<PokemonData> fetchPokemon(int id) async {
+    if (GetIt.I<BackendSocket>().isStandby) {
+      throw Exception('App is in standby');
+    }
     if (_pokemonCache.containsKey(id)) return _pokemonCache[id]!;
 
     final response = await http.get(Uri.parse('https://pokeapi.co/api/v2/pokemon/$id'));

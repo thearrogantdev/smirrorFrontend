@@ -2,6 +2,8 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:get_it/get_it.dart';
+import 'package:smirror_frontend/src/systems/backend_socket.dart';
 import 'package:smirror_frontend/src/widgets/base_widget.dart';
 
 const _randomDogEndpoint = 'https://dog.ceo/api/breeds/image/random';
@@ -24,6 +26,9 @@ class _RandomDogWidgetState extends SmirrorState<RandomDogWidget> {
   }
 
   Future<void> _fetchDogImage() async {
+    if (GetIt.I<BackendSocket>().isStandby) {
+      return;
+    }
     try {
       final response = await http.get(Uri.parse(_randomDogEndpoint));
       if (response.statusCode != 200) {

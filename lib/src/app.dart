@@ -117,6 +117,7 @@ class _AppState extends State<App> {
   }
 
   void _startWakeUp(String userName) {
+    getIt<BackendSocket>().isStandby = false;
     setState(() {
       _userName = userName;
       _isStandby = false;
@@ -179,6 +180,8 @@ class _AppState extends State<App> {
                       _goToPage(current + 1);
                       break;
                     case bfmsg.SimpleCommandType.STANDBY:
+                      _infoTimer?.cancel();
+                      getIt<BackendSocket>().isStandby = true;
                       setState(() {
                         _isStandby = true;
                         _isIdentifyingUser = false;
@@ -187,6 +190,7 @@ class _AppState extends State<App> {
                       });
                       break;
                     case bfmsg.SimpleCommandType.IDENTIFY_USER:
+                      getIt<BackendSocket>().isStandby = false;
                       setState(() {
                         _isStandby = false;
                         _isIdentifyingUser = true;

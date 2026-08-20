@@ -4,6 +4,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:injectable/injectable.dart';
+import 'package:get_it/get_it.dart';
+import 'package:smirror_frontend/src/systems/backend_socket.dart';
 import 'package:smirror_wire/constants/widget_ids.dart';
 import 'token_service.dart';
 
@@ -44,6 +46,22 @@ class DailyForecast {
   });
 }
 
+class HourlyRainForecast {
+  final DateTime time;
+  final double pop; // 0.0 to 1.0 (e.g. 0.75 = 75%)
+  final double rainMm; // volume of rain in mm for 3h
+  final String description;
+  final String icon;
+
+  const HourlyRainForecast({
+    required this.time,
+    required this.pop,
+    required this.rainMm,
+    required this.description,
+    required this.icon,
+  });
+}
+
 @LazySingleton()
 class WeatherService {
   final TokenService _tokenService;
@@ -63,6 +81,9 @@ class WeatherService {
     String lang = 'en',
     Duration? timeout,
   }) async {
+    if (GetIt.I<BackendSocket>().isStandby) {
+      throw Exception('App is in standby');
+    }
     // 1) Get token from your backend (provider name fixed as requested)
     final token = await _tokenService.getToken(PropertyIdsOpenWeatherWidget.tokenName);
     if (token.accessToken.isEmpty) {
@@ -130,6 +151,9 @@ class WeatherService {
     required String units, // "metric" | "imperial" | "standard"
     String lang = 'en',
   }) async {
+    if (GetIt.I<BackendSocket>().isStandby) {
+      return const <DailyForecast>[];
+    }
     final token = await _tokenService.getToken(PropertyIdsOpenWeatherWidget.tokenName);
 
     final uri = Uri.https(
@@ -238,6 +262,89 @@ class WeatherService {
       ));
 
       if (result.length == 3) break; // only next 3 days
+    }
+
+    return result;
+  }
+
+  Future<List<HourlyRainForecast>> getTodayRainForecast({
+    required double lat,
+    required double lon,
+    String units = 'metric',
+    String lang = 'en',
+  }) async {
+    if (GetIt.I<BackendSocket>().isStandby) {
+      return const <HourlyRainForecast>[];
+    }
+    final token = await _tokenService.getToken(PropertyIdsOpenWeatherWidget.tokenName);
+
+    final uri = Uri.https(
+      'api.openweathermap.org',
+      '/data/2.5/forecast',
+      {
+        'lat': lat.toString(),
+        'lon': lon.toString(),
+        'appid': token.accessToken,
+        'units': units,
+        'lang': lang,
+      },
+    );
+
+    final res = await _http.get(uri);
+    if (res.statusCode != 200) {
+      throw Exception('OpenWeather rain forecast failed: ${res.statusCode} ${res.body}');
+    }
+
+    final Map<String, dynamic> j = jsonDecode(res.body);
+    final List list = (j['list'] as List? ?? const []);
+    final city = j['city'] as Map<String, dynamic>? ?? const {};
+    final tzOffsetSec = (city['timezone'] as num?)?.toInt() ?? 0;
+
+    final nowLocal = DateTime.now().toUtc().add(Duration(seconds: tzOffsetSec));
+    final todayMidnight = DateTime(nowLocal.year, nowLocal.month, nowLocal.day);
+
+    // Group API entries by hour of day (0, 3, 6, 9, 12, 15, 18, 21)
+    final Map<int, Map<String, dynamic>> apiEntriesByHour = {};
+    for (final e in list.cast<Map<String, dynamic>>()) {
+      final dt = (e['dt'] as num).toInt();
+      final localTime = DateTime.fromMillisecondsSinceEpoch(dt * 1000, isUtc: true)
+          .add(Duration(seconds: tzOffsetSec));
+      final entryDate = DateTime(localTime.year, localTime.month, localTime.day);
+
+      if (entryDate == todayMidnight) {
+        apiEntriesByHour[localTime.hour] = e;
+      }
+    }
+
+    final result = <HourlyRainForecast>[];
+    double lastKnownPop = 0.0;
+    double lastKnownRainMm = 0.0;
+    String lastDesc = '';
+    String lastIcon = '';
+
+    for (int h = 0; h <= 24; h += 3) {
+      final slotTime = todayMidnight.add(Duration(hours: h));
+      final hourKey = h == 24 ? 21 : h;
+
+      if (apiEntriesByHour.containsKey(hourKey)) {
+        final e = apiEntriesByHour[hourKey]!;
+        lastKnownPop = (e['pop'] as num?)?.toDouble() ?? 0.0;
+        final rainObj = e['rain'] as Map<String, dynamic>?;
+        lastKnownRainMm = (rainObj?['3h'] as num?)?.toDouble() ?? 0.0;
+
+        final weatherList = (e['weather'] as List?) ?? const [];
+        final w0 = weatherList.isNotEmpty ? (weatherList.first as Map<String, dynamic>) : const {};
+        lastDesc = (w0['description'] as String?) ?? '';
+        lastIcon = (w0['icon'] as String?) ?? '';
+      }
+
+      result.add(HourlyRainForecast(
+        time: slotTime,
+        pop: lastKnownPop,
+        rainMm: lastKnownRainMm,
+        description: lastDesc,
+        icon: lastIcon,
+      ));
     }
 
     return result;

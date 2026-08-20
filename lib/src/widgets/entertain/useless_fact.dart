@@ -2,6 +2,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:google_fonts/google_fonts.dart';
+import 'package:get_it/get_it.dart';
+import 'package:smirror_frontend/src/systems/backend_socket.dart';
 import 'package:smirror_wire/constants/widget_ids.dart';
 import 'package:smirror_frontend/src/widget_system/widget_property_helper.dart';
 import 'package:smirror_frontend/src/widgets/base_widget.dart';
@@ -25,6 +27,9 @@ class _RandomUselessFactState extends SmirrorState<RandomUselessFact> {
   }
 
   Future<void> _fetchFact() async {
+    if (GetIt.I<BackendSocket>().isStandby) {
+      return;
+    }
     final lang = propString(widget.widgetData.properties, PropertyIdsGeneralTextDisplay.language) ?? 'en';
     try {
       final response = await http.get(

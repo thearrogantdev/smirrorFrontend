@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:smirror_wire/generated/view_view_structure_generated.dart' as bfmsg;
+import 'package:smirror_wire/generated/back_front_back_front_generated.dart' as bfcmd;
 import 'package:smirror_wire/generated/widget_internals_widget_internals_generated.dart' as internals;
 import 'package:smirror_frontend/src/bloc/dashboard_cubit.dart';
 import 'package:smirror_frontend/src/bloc/multi_dashboard_cubit.dart';
@@ -38,11 +39,37 @@ class MultiHADashboardWidget extends StatelessWidget {
     return internalList.ids ?? [];
   }
 
+  bfcmd.SimpleCommandType _extractGesture(int propertyId, bfcmd.SimpleCommandType defaultGesture) {
+    if (widgetData.properties == null) return defaultGesture;
+    for (final prop in widgetData.properties!) {
+      if (prop.keyId == propertyId) {
+        if (prop.valueType != bfmsg.WidgetPropertyValueTypeId.IntValue) return defaultGesture;
+        final intValueWrapper = prop.value as bfmsg.IntValue;
+        final int val = intValueWrapper.value;
+        try {
+          return bfcmd.SimpleCommandType.fromValue(val);
+        } catch (_) {
+          return defaultGesture;
+        }
+      }
+    }
+    return defaultGesture;
+  }
+
   @override
   Widget build(BuildContext context) {
     final ids = _extractIds();
 
     if (ids.isEmpty) return const SizedBox.shrink();
+
+    final nextDashboardGesture = _extractGesture(
+      PropertyIdsMultiHADashboard.nextDashboardGesture,
+      bfcmd.SimpleCommandType.UP,
+    );
+    final prevDashboardGesture = _extractGesture(
+      PropertyIdsMultiHADashboard.prevDashboardGesture,
+      bfcmd.SimpleCommandType.DOWN,
+    );
 
     return BlocProvider(
       create: (context) => MergedMultiDashboardCubit(
@@ -50,6 +77,8 @@ class MultiHADashboardWidget extends StatelessWidget {
         GetIt.I<HomeAssistantRepository>(),
         GetIt.I<HomeAssistantDataService>(),
         GetIt.I<BackendSocket>(),
+        nextDashboardGesture: nextDashboardGesture,
+        prevDashboardGesture: prevDashboardGesture,
       ),
       child: BlocBuilder<MergedMultiDashboardCubit, HADashboardViewState?>(
         builder: (context, state) {
